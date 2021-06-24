@@ -326,42 +326,44 @@ class RandomWalk():
         self.msd = np.mean(self.sq_disp, axis=1)
         self.axial_msd = np.mean(self.axial_sq_disp, axis=1)
 
-    def _add_linear_plot(self, x, y, descriptor=None, color='k'):
+    def calc_linear_tau(self, x, y): #, descriptor=None, color='k'):
         r'''
-        Helper method to add a line to the msd plot
+        Helper method to calc tau
         '''
         a, res, _, _ = np.linalg.lstsq(x, y, rcond=-1)
         tau = 1/a[0]
         SStot = np.sum((y - y.mean())**2)
         rsq = 1 - (np.sum(res)/SStot)
-        label = ('Tau: ' + str(np.around(tau, 3)) +
-                 ', R^2: ' + str(np.around(rsq, 3)))
-        print(label)
-        plt.plot(x, a[0]*x, color+'--', label=label)
-        self.data[descriptor + '_tau'] = tau
-        self.data[descriptor + '_rsq'] = rsq
+        #label = ('Tau: ' + str(np.around(tau, 3)) +
+        #         ', R^2: ' + str(np.around(rsq, 3)))
+        #print(label)
+        #plt.plot(x, a[0]*x, color+'--', label=label)
+        #self.data[descriptor + '_tau'] = tau
+        #self.data[descriptor + '_rsq'] = rsq
+        return tau, rsq
 
-    def plot_msd(self):
+    def calc_tau(self):
         r'''
         Plot the mean square displacement for all walkers vs timestep
         And include a least squares regression fit.
         '''
         self.calc_msd()
         self.data = {}
-        fig, ax = plt.subplots(figsize=[6, 6])
-        ax.set(aspect=1, xlim=(0, self.nt), ylim=(0, self.nt))
+        #fig, ax = plt.subplots(figsize=[6, 6])
+        #ax.set(aspect=1, xlim=(0, self.nt), ylim=(0, self.nt))
         x = np.arange(0, self.nt, self.stride)[:, np.newaxis]
-        plt.plot(x, self.msd, 'k-', label='msd')
-        print('#'*30)
-        print('Square Displacement:')
-        self._add_linear_plot(x, self.msd, 'Mean', color='k')
-        colors = ['r', 'g', 'b']
-        for ax in range(self.dim):
-            print('Axis ' + str(ax) + ' Square Displacement Data:')
-            data = self.axial_msd[:, ax]*self.dim
-            plt.plot(x, data, colors[ax]+'-', label='asd '+str(ax))
-            self._add_linear_plot(x, data, 'axis_'+str(ax), colors[ax])
-        plt.legend()
+        #plt.plot(x, self.msd, 'k-', label='msd')
+        #print('#'*30)
+        #print('Square Displacement:')
+        tau_value, rsq_value  = self.calc_linear_tau(x, self.msd, 'Mean', color='k')
+        #colors = ['r', 'g', 'b']
+        #for ax in range(self.dim):
+        #    print('Axis ' + str(ax) + ' Square Displacement Data:')
+        #    data = self.axial_msd[:, ax]*self.dim
+        #    plt.plot(x, data, colors[ax]+'-', label='asd '+str(ax))
+        #    self._add_linear_plot(x, data, 'axis_'+str(ax), colors[ax])
+        #plt.legend()
+        return tau_value, rsq_value
 
     def _check_big_bounds(self):
         r'''
