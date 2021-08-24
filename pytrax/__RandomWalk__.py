@@ -355,7 +355,7 @@ class RandomWalk():
         #plt.plot(x, self.msd, 'k-', label='msd')
         #print('#'*30)
         #print('Square Displacement:')
-        tau_value, rsq_value  = self.calc_linear_tau(x, self.msd, 'Mean')
+        tau_value, rsq_value  = self.calc_linear_tau(x, self.msd)
         #colors = ['r', 'g', 'b']
         #for ax in range(self.dim):
         #    print('Axis ' + str(ax) + ' Square Displacement Data:')
