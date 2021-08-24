@@ -440,7 +440,7 @@ class RandomWalk():
         big_im = self.im.copy()
         func = [np.vstack, np.hstack, np.dstack]
         temp_im = self.im.copy()
-        for ax in tqdm(range(self.dim), desc='building big image'):
+        for ax in range(self.dim): #tqdm(range(self.dim), desc='building big image'):
             flip_im = np.flip(temp_im, ax)
             for c in range(num_copies):
                 if c % 2 == 0:
